@@ -1,0 +1,45 @@
+# Secrets and local environment
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+id_rsa
+id_ed25519
+secrets/
+credentials/
+
+# Logs and temporary files
+*.log
+*.tmp
+*.swp
+.DS_Store
+Thumbs.db
+
+# Virtual machines and snapshots
+*.vmdk
+*.vdi
+*.vhd
+*.vhdx
+*.ova
+*.ovf
+*.vmx
+*.vmxf
+*.vmsd
+*.vmsn
+*.vmem
+*.nvram
+*.vmsw
+*.hdd/
+*.vmwarevm/
+**/Snapshots/
+
+# Generated benchmark output (review before committing)
+benchmark/results/*
+!benchmark/results/.gitkeep
+
+# Python / editor artifacts
+__pycache__/
+.venv/
+.vscode/
+.idea/
