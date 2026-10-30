@@ -39,9 +39,9 @@ Tổng cấp phát: 5 vCPU, 5 GB RAM, 30 GB dung lượng đĩa ảo.
 | Thành phần | Phiên bản thực tế | Nguồn cài đặt | Người cập nhật |
 |---|---|---|---|
 | Ubuntu Server | 24.04.5  | https://ubuntu.com/download/server | Khang |
-| Nginx | TODO | TODO | TODO |
-| Node Exporter | TODO | TODO | TODO |
-| process-exporter | TODO | TODO | TODO |
+| Nginx | 1.24.0 | apt (Ubuntu 24.04) | TODO |
+| Node Exporter | 1.12.1 | https://github.com/prometheus/node_exporter/releases/tag/v1.12.1 | TODO |
+| process-exporter | 0.8.7 | https://github.com/ncabatoff/process-exporter/releases/tag/v0.8.7 | TODO |
 | Prometheus | TODO | TODO | TODO |
 | Grafana | TODO | TODO | TODO |
 | k6 | TODO | TODO | TODO |
