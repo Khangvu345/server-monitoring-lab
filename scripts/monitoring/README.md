@@ -4,7 +4,7 @@
 
 _Bước 1 — Cài ubuntu server 24.04 và reboot thành công
 
-IP VM2 hiện tại	192.168.112.133
+IP VM2 hiện tại	192.168.100.20
 
 _Bước 2.1 — Kiểm tra phiên bản hệ điều hành
 lsb_release -a
@@ -96,7 +96,7 @@ Kiểm tra cổng:
 sudo ss -lntp | grep 3000
 
 Grafana mặc định sử dụng cổng 3000. hãy thử mở:
-http://192.168.112.133:3000
+http://192.168.100.20:3000
 
 
 Lần đăng nhập đầu tiên thường sử dụng:
