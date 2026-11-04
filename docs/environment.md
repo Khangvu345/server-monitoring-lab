@@ -42,8 +42,8 @@ Tổng cấp phát: 5 vCPU, 5 GB RAM, 30 GB dung lượng đĩa ảo.
 | Nginx | TODO | TODO | TODO |
 | Node Exporter | TODO | TODO | TODO |
 | process-exporter | TODO | TODO | TODO |
-| Prometheus | TODO | TODO | TODO |
-| Grafana | TODO | TODO | TODO |
+| Prometheus | 2.45.3 | VMWare lệnh "sudo apt install -y prometheus" | Long |
+| Grafana | 13.2.4 | VMWare lệnh "sudo apt install -y grafana" | Long |
 | k6 | TODO | TODO | TODO |
 
 ## 5. Nguyên tắc tái lập
