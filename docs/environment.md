@@ -39,9 +39,9 @@ Tổng cấp phát: 5 vCPU, 5 GB RAM, 30 GB dung lượng đĩa ảo.
 | Thành phần | Phiên bản thực tế | Nguồn cài đặt | Người cập nhật |
 |---|---|---|---|
 | Ubuntu Server | 24.04.5  | https://ubuntu.com/download/server | Khang |
-| Nginx | TODO | TODO | TODO |
-| Node Exporter | TODO | TODO | TODO |
-| process-exporter | TODO | TODO | TODO |
+| Nginx | 1.24.0 | apt (`nginx=1.24.0*`, gói mặc định của Ubuntu 24.04) | Khôi |
+| Node Exporter | 1.12.1 | github.com/prometheus/node_exporter (kiểm tra sha256sums.txt) | Khôi |
+| process-exporter | 0.8.7 | github.com/ncabatoff/process-exporter (kiểm tra checksums.txt) | Khôi |
 | Prometheus | 2.45.3 | VMWare lệnh "sudo apt install -y prometheus" | Long |
 | Grafana | 13.2.4 | VMWare lệnh "sudo apt install -y grafana" | Long |
 | k6 | TODO | TODO | TODO |

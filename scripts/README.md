@@ -2,7 +2,7 @@
 
 Các script được chia theo vai trò VM:
 
-- `common/`: thiết lập nền dùng chung (sẽ bổ sung sau khi nhóm thống nhất).
+- `common/`: thiết lập nền dùng chung cho cả ba VM (múi giờ, đồng bộ NTP, hostname, SSH). Chạy trước script theo vai trò.
 - `server/`: cài đặt và cấu hình Nginx, Node Exporter, process-exporter.
 - `monitoring/`: cài đặt và cấu hình Prometheus, Grafana.
 - `test/`: cài đặt k6 và tiện ích kiểm thử.
