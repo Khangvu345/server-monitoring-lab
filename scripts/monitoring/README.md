@@ -1,4 +1,4 @@
-# HƯỚNG DẪN CÀI ĐẶT VÀ CẤU HÌNH VM2 – MONITORING (THỦ CÔNG)
+# HƯỚNG DẪN CÀI ĐẶT VÀ CẤU HÌNH VM2 – MONITORING
 
 Tài liệu này hướng dẫn cài đặt và cấu hình **Prometheus, Grafana trên VM2**, kết nối với các Exporter trên VM1 và tạo Dashboard giám sát.
 
@@ -261,7 +261,7 @@ Nếu cả hai lệnh đều trả về `200`, VM2 đã truy cập được hai 
 
 Nếu không thành công, kiểm tra lại IP, trạng thái dịch vụ Exporter và firewall trên VM1 trước khi sửa cấu hình Prometheus.
 
-### Bước 5.3 – Khai báo VM1 trong Prometheus
+### Bước 5.3 – Khai báo VM1 trong Prometheus (làm thủ công như ở dưới/ hoặc import file configs/prometheus/prometheus.yml từ Github như hướng dẫn trong configs/prometheus/README.md) 
 
 Sao lưu cấu hình hiện tại:
 
@@ -277,12 +277,16 @@ sudo nano /etc/prometheus/prometheus.yml
 
 Tìm phần `scrape_configs:`. Thêm hai job dưới đây vào bên trong danh sách `scrape_configs`, đồng thời **giữ nguyên job mặc định đang có**:
 
-```yaml
+```
   - job_name: "vm1-node"
+    scrape_interval: 5s
+    scrape_timeout: 5s
     static_configs:
       - targets: ["192.168.100.10:9100"]
 
   - job_name: "vm1-process"
+    scrape_interval: 5s
+    scrape_timeout: 5s
     static_configs:
       - targets: ["192.168.100.10:9256"]
 ```
@@ -326,7 +330,7 @@ Hai target `vm1-node` và `vm1-process` cần có trạng thái `UP`.
 
 Nếu target `DOWN`, kiểm tra địa chỉ IP, cổng Exporter, kết nối mạng và firewall trên VM1.
 
-## 6. Kết nối Grafana với Prometheus
+## 6. Kết nối Grafana với Prometheus (làm thủ công như ở dưới/ hoặc import file vm-server-monitoring.json từ Github như hướng dẫn trong configs/grafana/README.md) 
 
 Chỉ thực hiện bước này sau khi Prometheus hoạt động và các target cần thiết đã ở trạng thái `UP`.
 
