@@ -21,7 +21,9 @@ wget -O prometheus.yml https://raw.githubusercontent.com/Khangvu345/server-monit
 
 3. Kiểm tra file vừa tải
 Chạy:
+```bash
 cat prometheus.yml
+```
 
 Cần thấy các job:
 - job_name: "prometheus"
@@ -31,8 +33,8 @@ Cần thấy các job:
 - job_name: "vm1-process"
 
 Đặc biệt kiểm tra IP:
-192.168.100.10:9100
-192.168.100.10:9256
+- 192.168.100.10:9100
+- 192.168.100.10:9256
 
 
 4. Sao chép file `prometheus.yml` vào thư mục cấu hình:
@@ -41,20 +43,19 @@ Cần thấy các job:
 sudo cp configs/prometheus/prometheus.yml /etc/prometheus/prometheus.yml
 ```
 
-5. Điều chỉnh địa chỉ IP và port của các Exporter theo môi trường triển khai thực tế.
-6. Kiểm tra cú pháp cấu hình:
+5. Kiểm tra cú pháp cấu hình:
 
 ```bash
 sudo promtool check config /etc/prometheus/prometheus.yml
 ```
 
-7. Nếu cấu hình hợp lệ (SUCCESS), khởi động lại Prometheus:
+6. Nếu cấu hình hợp lệ (SUCCESS), khởi động lại Prometheus:
 
 ```bash
 sudo systemctl restart prometheus
 ```
 
-8. Kiểm tra trạng thái dịch vụ:
+7. Kiểm tra trạng thái dịch vụ:
 
 ```bash
 sudo systemctl status prometheus --no-pager
