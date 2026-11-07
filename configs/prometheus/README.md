@@ -13,14 +13,18 @@ Thư mục `prometheus/` lưu trữ các file cấu hình phục vụ Prometheus
 2. Tải file trực tiếp trên VM2
 Mở Terminal Ubuntu trên VM2.
 
-Chạy lệnh:
+-Chạy lệnh:
+```bash
 cd ~
+```
 
-Sau đó dùng wget (đã lấy link raw từ Github):
+- Sau đó dùng wget (đã lấy link raw từ Github):
+```bash
 wget -O prometheus.yml https://raw.githubusercontent.com/Khangvu345/server-monitoring-lab/refs/heads/monitoring/configs/prometheus/prometheus.yml
+```
 
 3. Kiểm tra file vừa tải
-Chạy:
+- Chạy:
 ```bash
 cat prometheus.yml
 ```
