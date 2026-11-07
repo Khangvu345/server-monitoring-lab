@@ -10,26 +10,51 @@ Thư mục `prometheus/` lưu trữ các file cấu hình phục vụ Prometheus
 ## Cách sử dụng
 
 1. Cài đặt Prometheus trên VM2 theo phiên bản đã thống nhất.
-2. Sao chép file `prometheus.yml` vào thư mục cấu hình:
+2. Tải file trực tiếp trên VM2
+Mở Terminal Ubuntu trên VM2.
+
+Chạy lệnh:
+cd ~
+
+Sau đó dùng wget (đã lấy link raw từ Github):
+wget -O prometheus.yml https://raw.githubusercontent.com/Khangvu345/server-monitoring-lab/refs/heads/monitoring/configs/prometheus/prometheus.yml
+
+3. Kiểm tra file vừa tải
+Chạy:
+cat prometheus.yml
+
+Cần thấy các job:
+- job_name: "prometheus"
+
+- job_name: "vm1-node"
+
+- job_name: "vm1-process"
+
+Đặc biệt kiểm tra IP:
+192.168.100.10:9100
+192.168.100.10:9256
+
+
+4. Sao chép file `prometheus.yml` vào thư mục cấu hình:
 
 ```bash
 sudo cp configs/prometheus/prometheus.yml /etc/prometheus/prometheus.yml
 ```
 
-3. Điều chỉnh địa chỉ IP và port của các Exporter theo môi trường triển khai thực tế.
-4. Kiểm tra cú pháp cấu hình:
+5. Điều chỉnh địa chỉ IP và port của các Exporter theo môi trường triển khai thực tế.
+6. Kiểm tra cú pháp cấu hình:
 
 ```bash
 sudo promtool check config /etc/prometheus/prometheus.yml
 ```
 
-5. Nếu cấu hình hợp lệ, khởi động lại Prometheus:
+7. Nếu cấu hình hợp lệ (SUCCESS), khởi động lại Prometheus:
 
 ```bash
 sudo systemctl restart prometheus
 ```
 
-6. Kiểm tra trạng thái dịch vụ:
+8. Kiểm tra trạng thái dịch vụ:
 
 ```bash
 sudo systemctl status prometheus --no-pager
