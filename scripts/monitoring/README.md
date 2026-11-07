@@ -1,5 +1,3 @@
-# Monitoring setup (thủ công)
-
 _Bước 1 — Cài ubuntu server 24.04 và reboot thành công
 
 IP VM2 hiện tại	192.168.100.20
@@ -313,7 +311,7 @@ Nếu tên ổ đĩa khác thì thay sda bằng tên tương ứng.
  
 5. Sắp xếp Dashboard
 VM1 – SERVER MONITORING
-192.168.100.10 · Prometheus · Auto refresh 15s
+192.168.100.10 · Prometheus · Auto refresh 10s
 Sau khi hoàn thành:
 •	Chọn khoảng thời gian Last 15 minutes.
 •	Chọn Auto refresh 10s.
