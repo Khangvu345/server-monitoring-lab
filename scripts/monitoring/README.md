@@ -62,7 +62,7 @@ sudo apt update
 ### Bước 3.1 – Cài đặt
 
 ```bash
-sudo apt install -y prometheus
+sudo apt install -y prometheus=2.45.3+ds-2ubuntu0.3
 ```
 
 ### Bước 3.2 – Kiểm tra phiên bản
@@ -132,59 +132,35 @@ http://192.168.100.20:9090
 ### Bước 4.1 – Cài các gói cần thiết
 
 ```bash
-sudo apt-get install -y apt-transport-https software-properties-common wget
+sudo apt-get update
+sudo apt-get install -y adduser libfontconfig1 musl wget
 ```
 
-Các phiên bản gói đã thống nhất:
+### Bước 4.2 – Tải và cài đặt Grafana 13.2.4
 
-| Gói | Phiên bản |
-|---|---|
-| apt-transport-https | `2.8.3` |
-| software-properties-common | `0.99.49.4` |
-| wget | `1.21.4-1ubuntu4.5` |
-
-Có thể kiểm tra phiên bản gói bằng:
+Tải gói cài đặt Grafana OSS phiên bản 13.2.4 dành cho Ubuntu/Debian 64-bit:
 
 ```bash
-apt policy apt-transport-https software-properties-common wget
+wget https://dl.grafana.com/grafana/release/13.2.4/grafana_13.2.4_38252365904_linux_amd64.deb
 ```
 
-### Bước 4.2 – Thêm khóa xác thực và kho Grafana
-
-Tạo thư mục lưu khóa:
+Cài đặt:
 
 ```bash
-sudo mkdir -p /etc/apt/keyrings
+sudo dpkg -i grafana_13.2.4_38252365904_linux_amd64.deb
 ```
 
-Tải khóa xác thực:
+### Bước 4.3 – Kiểm tra phiên bản
 
 ```bash
-sudo wget -q -O /etc/apt/keyrings/grafana.asc https://apt.grafana.com/gpg.key
-```
-
-Thêm kho Grafana:
-
-```bash
-echo "deb [signed-by=/etc/apt/keyrings/grafana.asc] https://apt.grafana.com stable main" | sudo tee /etc/apt/sources.list.d/grafana.list
-```
-
-### Bước 4.3 – Cập nhật kho và cài Grafana
-
-```bash
-sudo apt update
-sudo apt install -y grafana
-```
-
-Kiểm tra phiên bản:
-
-```bash
-grafana --version
+grafana-server -v
 ```
 
 **Phiên bản yêu cầu: `13.2.4`.**
 
-Nếu phiên bản không đúng, dừng lại để kiểm tra gói trong kho và thống nhất với nhóm; không tự ý sử dụng phiên bản khác.
+Nếu phiên bản hiển thị không đúng, dừng lại để kiểm tra gói cài đặt trước khi tiếp tục.
+
+**Lưu ý:** Sử dụng gói Grafana OSS chính thức từ Grafana Labs. Không sử dụng lệnh `sudo apt install grafana` không chỉ định phiên bản vì có thể cài phiên bản khác với phiên bản đã thống nhất.
 
 ### Bước 4.4 – Khởi động Grafana
 
