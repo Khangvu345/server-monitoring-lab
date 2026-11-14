@@ -1,195 +1,691 @@
-# Monitoring setup
+# HƯỚNG DẪN CÀI ĐẶT VÀ CẤU HÌNH VM2 – MONITORING
 
-Đặt script cài đặt Prometheus và Grafana tại đây.
+Tài liệu này hướng dẫn cài đặt và cấu hình **Prometheus, Grafana trên VM2**, kết nối với các Exporter trên VM1 và tạo Dashboard giám sát.
 
-_Bước 1 — Cài ubuntu server 24.04 và reboot thành công
+> **Lưu ý:** Các phiên bản phần mềm trong tài liệu được giữ cố định theo thống nhất của nhóm. Không tự ý đổi phiên bản khi thực hiện.
 
-IP VM2 hiện tại	192.168.100.20
+## 1. Thông tin môi trường VM2
 
-_Bước 2.1 — Kiểm tra phiên bản hệ điều hành
+| Thành phần | Giá trị |
+|---|---|
+| Hệ điều hành | Ubuntu Server 24.04 LTS |
+| Địa chỉ IP VM2 | `192.168.100.20` |
+| Prometheus | `2.45.3` |
+| Grafana | `13.2.4` |
+| Node Exporter trên VM1 | `1.12.1` |
+| process-exporter trên VM1 | `0.8.7` |
+| Cổng Prometheus | `9090` |
+| Cổng Grafana | `3000` |
+| Cổng Node Exporter | `9100` |
+| Cổng process-exporter | `9256` |
+
+Địa chỉ VM1 được sử dụng trong tài liệu là `192.168.100.10`.
+
+## 2. Kiểm tra hệ điều hành và kết nối mạng
+
+### Bước 2.1 – Kiểm tra phiên bản Ubuntu
+
+```bash
 lsb_release -a
+```
 
-Kết quả cần xác nhận Ubuntu 24.04 LTS.
+Kết quả cần xác nhận Ubuntu Server 24.04 LTS.
 
-_Bước 2.2 — Kiểm tra địa chỉ IP và card mạng
+### Bước 2.2 – Kiểm tra địa chỉ IP và card mạng
+
+```bash
 ip -br addr
 ip route
+```
 
-_Bước 2.3 — Kiểm tra kết nối mạng
+Đảm bảo VM2 sử dụng đúng địa chỉ IP `192.168.100.20`.
+
+### Bước 2.3 – Kiểm tra kết nối Internet và DNS
+
+```bash
 ping -c 4 8.8.8.8
-
 ping -c 4 google.com
+```
 
 - Nếu cả hai lệnh thành công: kết nối Internet và phân giải DNS cơ bản hoạt động.
-- Nếu ping IP thành công nhưng ping tên miền thất bại: cần kiểm tra DNS.
-- Nếu cả hai thất bại: kiểm tra cấu hình mạng VMnet NAT trước khi cài phần mềm.
+- Nếu ping IP thành công nhưng ping tên miền thất bại: kiểm tra DNS.
+- Nếu cả hai thất bại: kiểm tra cấu hình mạng VMnet NAT trước khi tiếp tục.
 
-_Bước 2.4 — Cập nhật danh sách gói
+### Bước 2.4 – Cập nhật danh sách gói
+
+```bash
 sudo apt update
+```
 
+## 3. Cài đặt Prometheus trên VM2
 
-_3. Cài Prometheus trên VM2
-Sau khi kiểm tra mạng xong, chạy:
-sudo apt install -y prometheus
+### Bước 3.1 – Cài đặt
 
-Kiểm tra version (đồng nhất version 2.45.3):
+```bash
+sudo apt install -y prometheus=2.45.3+ds-2ubuntu0.3
+```
 
+### Bước 3.2 – Kiểm tra phiên bản
+
+```bash
 prometheus --version
+```
 
-Kiểm tra dịch vụ:
+**Phiên bản yêu cầu: `2.45.3`.**
+
+Nếu phiên bản hiển thị không đúng, không tự ý thay đổi sang phiên bản khác. Kiểm tra nguồn gói và trao đổi với nhóm trước khi tiếp tục.
+
+### Bước 3.3 – Kiểm tra và bật dịch vụ
+
+```bash
 sudo systemctl status prometheus --no-pager
+```
 
-Nếu hiển thị active (running) thì dịch vụ đang chạy.
+Nếu dịch vụ chưa chạy, bật dịch vụ và thiết lập tự khởi động:
 
-Thiết lập tự khởi động cùng hệ điều hành:
-sudo systemctl enable prometheus
+```bash
+sudo systemctl enable --now prometheus
+```
 
-Kiểm tra cổng mặc định:
+Kiểm tra lại:
+
+```bash
+sudo systemctl status prometheus --no-pager
+```
+
+Trạng thái mong đợi: `active (running)`.
+
+### Bước 3.4 – Kiểm tra cổng và API
+
+```bash
 sudo ss -lntp | grep 9090
+```
 
-Kiểm tra Prometheus bằng yêu cầu GET
-Chạy lệnh:
+Kiểm tra Prometheus đã sẵn sàng:
+
+```bash
 curl -s http://localhost:9090/-/ready
+```
 
 Kết quả mong đợi:
+
+```text
 Prometheus Server is Ready.
+```
 
-Tiếp theo:
+Kiểm tra thông tin phiên bản qua API:
+
+```bash
 curl -s http://localhost:9090/api/v1/status/buildinfo
+```
 
-Nếu trả về dữ liệu JSON chứa phiên bản Prometheus thì bước cài đặt cơ bản đã ổn.
+Nếu trả về dữ liệu JSON chứa thông tin build và phiên bản Prometheus, dịch vụ đã phản hồi.
 
-_4. Cài Grafana trên VM2
-Chạy lần lượt từng khối lệnh:
+Có thể truy cập giao diện từ máy host:
 
-_Bước 4.1 — Cài công cụ cần thiết
-sudo apt-get install -y apt-transport-https software-properties-common wget
+```text
+http://192.168.100.20:9090
+```
 
-Đồng nhất các phiên bản: 
-- apt-transport-https version 2.8.3
-- software-properties-common version 0.99.49.4
-- wget version 1.21.4-1ubuntu4.5
+## 4. Cài đặt Grafana trên VM2
 
-_Bước 4.2 — Thêm khóa xác thực và kho Grafana
-sudo mkdir -p /etc/apt/keyrings
+### Bước 4.1 – Cài các gói cần thiết
 
-sudo wget -q -O /etc/apt/keyrings/grafana.asc https://apt.grafana.com/gpg.key
+```bash
+sudo apt-get update
+sudo apt-get install -y adduser libfontconfig1 musl wget
+```
 
-Thêm kho Grafana:
-echo "deb [signed-by=/etc/apt/keyrings/grafana.asc] https://apt.grafana.com stable main" | sudo tee /etc/apt/sources.list.d/grafana.list
+### Bước 4.2 – Tải và cài đặt Grafana 13.2.4
 
-_Bước 4.3 — Cài Grafana
-sudo apt update
-sudo apt install -y grafana
+Tải gói cài đặt Grafana OSS phiên bản 13.2.4 dành cho Ubuntu/Debian 64-bit:
 
-Kiểm tra version (đồng nhất version 13.2.4):
+```bash
+wget https://dl.grafana.com/grafana/release/13.2.4/grafana_13.2.4_38252365904_linux_amd64.deb
+```
 
-grafana --version
+Cài đặt:
 
-_Bước 4.4 — Khởi động và bật tự khởi động
+```bash
+sudo dpkg -i grafana_13.2.4_38252365904_linux_amd64.deb
+```
+
+### Bước 4.3 – Kiểm tra phiên bản
+
+```bash
+grafana-server -v
+```
+
+**Phiên bản yêu cầu: `13.2.4`.**
+
+Nếu phiên bản hiển thị không đúng, dừng lại để kiểm tra gói cài đặt trước khi tiếp tục.
+
+**Lưu ý:** Sử dụng gói Grafana OSS chính thức từ Grafana Labs. Không sử dụng lệnh `sudo apt install grafana` không chỉ định phiên bản vì có thể cài phiên bản khác với phiên bản đã thống nhất.
+
+### Bước 4.4 – Khởi động Grafana
+
+```bash
 sudo systemctl enable --now grafana-server
+```
 
-Kiểm tra:
+Kiểm tra trạng thái:
+
+```bash
 sudo systemctl status grafana-server --no-pager
+```
+
+Trạng thái mong đợi: `active (running)`.
 
 Kiểm tra cổng:
+
+```bash
 sudo ss -lntp | grep 3000
+```
 
-Grafana mặc định sử dụng cổng 3000. hãy thử mở:
+Truy cập Grafana từ máy host:
+
+```text
 http://192.168.100.20:3000
+```
 
+Thông tin đăng nhập lần đầu thường là:
 
-Lần đăng nhập đầu tiên thường sử dụng:
-- Username: admin
-- Password: admin
-Hệ thống thường yêu cầu đổi mật khẩu sau khi đăng nhập lần đầu. Hãy đặt mật khẩu riêng và không ghi mật khẩu thật vào báo cáo chung.
+- Username: `admin`
+- Password: `admin`
 
-(các bước dưới chưa làm)
+Grafana thường yêu cầu đổi mật khẩu sau lần đăng nhập đầu tiên. Hãy đặt mật khẩu riêng và không ghi mật khẩu thật vào tài liệu chung của nhóm.
 
-_5. Kết nối Prometheus với VM1
-Đây là bước quan trọng nhất của phần Monitoring: Prometheus phải lấy được dữ liệu thật từ VM1, chứ không chỉ chạy được giao diện.
+## 5. Kết nối Prometheus với VM1
 
-_Bước 5.1 — Nhờ thành viên phụ trách VM1 cài Node Exporter
-Trên VM1, thành viên phụ trách máy chủ cần cài và bật Node Exporter. Nếu dùng gói Ubuntu:
-sudo apt update
-sudo apt install -y prometheus-node-exporter
-sudo systemctl enable --now prometheus-node-exporter
+Đây là bước giúp Prometheus thu thập dữ liệu thực tế từ VM1 thay vì chỉ chạy giao diện.
 
-Kiểm tra dịch vụ:
-sudo systemctl status prometheus-node-exporter --no-pager
+Mục tiêu: VM2 thu thập được các chỉ số CPU, RAM, ổ đĩa, mạng và tiến trình từ VM1.
 
-Node Exporter mặc định cung cấp metrics ở cổng 9100.
+### Bước 5.1 – Xác nhận Exporter trên VM1
 
-_Bước 5.2 — Kiểm tra từ VM2
-Trên VM2, thay địa chỉ IP bên dưới bằng IP thật của VM1:
-curl http://192.168.100.10:9100/metrics
+Thành viên phụ trách VM1 cần cài đặt và bật các dịch vụ sau:
 
-Nếu thành công, bạn sẽ thấy nhiều dòng dữ liệu, chẳng hạn các chỉ số bắt đầu bằng node_cpu, node_memory, node_disk và node_network.
+| Dịch vụ | Phiên bản | Cổng |
+|---|---:|---:|
+| Node Exporter | `1.12.1` | `9100` |
+| process-exporter | `0.8.7` | `9256` |
 
-Nếu gặp lỗi kết nối, kiểm tra IP, mạng VMnet NAT và firewall trên VM1 trước. Không nên vội sửa cấu hình Prometheus khi VM2 chưa truy cập được endpoint này.
+Không cài lại các Exporter trên VM2. Các dịch vụ này chạy trên VM1.
 
-_Bước 5.3 — Khai báo VM1 trong Prometheus
-Trên VM2, sao lưu cấu hình trước khi chỉnh sửa:
-sudo cp /etc/prometheus/prometheus.yml \
-  /etc/prometheus/prometheus.yml.bak
+### Bước 5.2 – Kiểm tra kết nối từ VM2
 
-Mở file:
+Trên terminal VM2, kiểm tra Node Exporter:
+
+```bash
+curl -s -o /dev/null -w "%{http_code}\n" http://192.168.100.10:9100/metrics
+```
+
+Kiểm tra process-exporter:
+
+```bash
+curl -s -o /dev/null -w "%{http_code}\n" http://192.168.100.10:9256/metrics
+```
+
+Kết quả mong đợi:
+
+```text
+200
+200
+```
+
+Nếu cả hai lệnh đều trả về `200`, VM2 đã truy cập được hai nguồn dữ liệu trên VM1.
+
+Nếu không thành công, kiểm tra lại IP, trạng thái dịch vụ Exporter và firewall trên VM1 trước khi sửa cấu hình Prometheus.
+
+### Bước 5.3 – Khai báo VM1 trong Prometheus (làm thủ công như ở dưới/ hoặc import file configs/prometheus/prometheus.yml từ Github như hướng dẫn trong configs/prometheus/README.md) 
+
+Sao lưu cấu hình hiện tại:
+
+```bash
+sudo cp /etc/prometheus/prometheus.yml /etc/prometheus/prometheus.yml.bak
+```
+
+Mở file cấu hình:
+
+```bash
 sudo nano /etc/prometheus/prometheus.yml
+```
 
-Tìm phần scrape_configs: hiện có. Bên trong danh sách này, thêm một job mới, giữ nguyên job mặc định đang có:
+Tìm phần `scrape_configs:`. Thêm hai job dưới đây vào bên trong danh sách `scrape_configs`, đồng thời **giữ nguyên job mặc định đang có**:
+
+```
   - job_name: "vm1-node"
+    scrape_interval: 5s
+    scrape_timeout: 5s
     static_configs:
       - targets: ["192.168.100.10:9100"]
 
+  - job_name: "vm1-process"
+    scrape_interval: 5s
+    scrape_timeout: 5s
+    static_configs:
+      - targets: ["192.168.100.10:9256"]
+```
+
 Lưu ý:
-- Dấu cách trong YAML phải chính xác.
-- Không tạo một mục scrape_configs: thứ hai.
-- Đổi 192.168.100.10 thành IP thực tế của VM1.
-Lưu file trong Nano bằng Ctrl + O, nhấn Enter, rồi thoát bằng Ctrl + X.
 
-Kiểm tra cấu hình:
+- Không tạo thêm một mục `scrape_configs:` thứ hai.
+- Chú ý thụt lề YAML.
+- Không xóa cấu hình job mặc định.
+- Nếu IP VM1 thay đổi, cập nhật lại địa chỉ trong `targets`.
+
+Lưu file bằng `Ctrl + O` → `Enter` → `Ctrl + X`.
+
+### Bước 5.4 – Kiểm tra và nạp lại cấu hình
+
+Kiểm tra cú pháp:
+
+```bash
 sudo promtool check config /etc/prometheus/prometheus.yml
+```
 
-Nếu hợp lệ, khởi động lại Prometheus:
+Nếu cấu hình hợp lệ, khởi động lại Prometheus:
+
+```bash
 sudo systemctl restart prometheus
+```
 
-Mở http://IP_CUA_VM2:9090/targets và kiểm tra job vm1-node.
+Kiểm tra dịch vụ:
 
-Kết quả cần đạt:
-vm1-node — UP
+```bash
+sudo systemctl status prometheus --no-pager
+```
 
-Prometheus truy cập được Node Exporter và thu thập metrics thành công.
+Mở trang Targets:
 
-vm1-node — DOWN
+```text
+http://192.168.100.20:9090/targets
+```
 
-Kiểm tra lại endpoint bằng curl, địa chỉ IP, cổng 9100, firewall và cấu hình target.
+Hai target `vm1-node` và `vm1-process` cần có trạng thái `UP`.
 
-_6. Kết nối Grafana với Prometheus và tạo dashboard
-Khi vm1-node đã ở trạng thái UP, bạn mới chuyển sang bước này.
+Nếu target `DOWN`, kiểm tra địa chỉ IP, cổng Exporter, kết nối mạng và firewall trên VM1.
 
-_Bước 6.1 — Thêm nguồn dữ liệu Prometheus
-1. Mở http://IP_CUA_VM2:3000.
-2. Đăng nhập Grafana.
-3. Vào Connections → Data sources → Add data source.
-4. Chọn Prometheus.
+## 6. Kết nối Grafana với Prometheus (làm thủ công như ở dưới/ hoặc import file vm-server-monitoring.json từ Github như hướng dẫn trong configs/grafana/README.md) 
+
+Chỉ thực hiện bước này sau khi Prometheus hoạt động và các target cần thiết đã ở trạng thái `UP`.
+
+### Bước 6.1 – Thêm Data Source
+
+Truy cập:
+
+```text
+http://192.168.100.20:3000
+```
+
+Đăng nhập Grafana và thực hiện:
+
+1. Chọn **Connections**.
+2. Chọn **Data sources**.
+3. Chọn **Add data source**.
+4. Chọn **Prometheus**.
 5. Nhập URL:
+
+```text
 http://localhost:9090
+```
 
-Vì Prometheus và Grafana đều chạy trên VM2, dùng localhost là phù hợp với cấu hình hiện tại.
+Vì Prometheus và Grafana cùng chạy trên VM2 nên sử dụng `localhost` là phù hợp.
 
-6. Nhấn Save & test. Xác nhận kết nối thành công.
+6. Nhấn **Save & test**.
 
-_Bước 6.2 — Kiểm tra thử các chỉ số
-Trong Grafana, mở khu vực Explore, chọn nguồn dữ liệu Prometheus và chạy từng truy vấn:
-Chỉ số	PromQL mẫu
-CPU sử dụng theo từng CPU	rate(node_cpu_seconds_total{mode!="idle"}[5m])
-RAM đã sử dụng (%)	100 * (1 - node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes)
-Dung lượng ổ đĩa đã sử dụng	node_filesystem_size_bytes - node_filesystem_avail_bytes
-Lưu lượng nhận mạng	rate(node_network_receive_bytes_total[5m])
-Lưu lượng gửi mạng	rate(node_network_transmit_bytes_total[5m])
+Nếu Grafana thông báo kết nối thành công, Data Source đã được cấu hình.
 
-Các truy vấn trên là ví dụ ban đầu. Khi tạo dashboard chính thức, cần lọc đúng thiết bị mạng, filesystem và loại trừ các thiết bị ảo không cần thiết.
+### Bước 6.2 – Kiểm tra dữ liệu trong Explore
 
-Để tiết kiệm thời gian, bạn có thể import dashboard Node Exporter có sẵn, sau đó kiểm tra các biểu đồ có đúng dữ liệu của VM1 không. Đừng chỉ chụp dashboard mẫu khi dữ liệu vẫn trống.
+1. Mở **Explore**.
+2. Chọn Data Source là Prometheus.
+3. Nhập từng truy vấn PromQL để kiểm tra dữ liệu.
 
-Lưu ý về yêu cầu nhóm: Node Exporter chủ yếu cung cấp metrics hệ thống. Thông lượng HTTP, thời gian đáp ứng và tỷ lệ lỗi phải lấy thêm từ công cụ benchmark như k6 trên VM3; không thể chỉ dựa vào dashboard CPU/RAM để kết luận hiệu năng dịch vụ Web.
+| Chỉ số | PromQL |
+|---|---|
+| CPU | `rate(node_cpu_seconds_total{mode!="idle"}[5m])` |
+| RAM sử dụng (%) | `100 * (1 - node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes)` |
+| Disk | `node_filesystem_size_bytes - node_filesystem_avail_bytes` |
+| Network nhận | `rate(node_network_receive_bytes_total[5m])` |
+| Network gửi | `rate(node_network_transmit_bytes_total[5m])` |
+
+Kiểm tra thêm process-exporter:
+
+```promql
+namedprocess_namegroup_num_procs
+```
+
+Nếu các truy vấn trả về dữ liệu, có thể bắt đầu tạo Dashboard.
+
+## 7. Tạo Dashboard giám sát VM1
+
+### Bước 7.1 – Tạo Dashboard mới
+
+Truy cập Grafana:
+
+```text
+http://192.168.100.20:3000
+```
+
+Thực hiện:
+
+1. Mở **Dashboards**.
+2. Chọn **New** → **New dashboard**.
+3. Chọn **Add visualization** hoặc tạo Panel mới.
+4. Chọn Data Source là **Prometheus**.
+5. Nhập truy vấn PromQL tương ứng.
+6. Chọn kiểu hiển thị, đặt tên và cấu hình đơn vị.
+7. Nhấn **Apply** để thêm Panel vào Dashboard.
+
+Sau khi nhập truy vấn, nếu biểu đồ chưa cập nhật, nhấn **Run queries**.
+
+Các Panel dưới đây sử dụng IP VM1 là `192.168.100.10`.
+
+### Panel 1 – CPU Usage (%)
+
+- **Title:** `VM1 - CPU Usage (%)`
+- **Visualization:** Time series
+- **Data source:** Prometheus
+
+PromQL:
+
+```promql
+100 * (1 - avg by (instance) (
+  rate(node_cpu_seconds_total{
+    instance="192.168.100.10:9100",
+    mode="idle"
+  }[1m])
+))
+```
+
+Truy vấn tính phần trăm CPU đang sử dụng, không tính thời gian CPU ở trạng thái idle.
+
+### Panel 2 – RAM Usage (%)
+
+- **Title:** `VM1 - RAM Usage (%)`
+- **Visualization:** Time series
+
+PromQL:
+
+```promql
+100 * (
+  1 -
+  node_memory_MemAvailable_bytes{
+    instance="192.168.100.10:9100"
+  }
+  /
+  node_memory_MemTotal_bytes{
+    instance="192.168.100.10:9100"
+  }
+)
+```
+
+Standard options:
+
+- Unit: `Percent (0-100)`
+- Min: `0`
+- Max: `100`
+
+### Panel 3 – Disk Usage (%)
+
+- **Title:** `VM1 - Disk Usage (%)`
+- **Visualization:** Time series
+
+PromQL:
+
+```promql
+100 * (
+  1 -
+  node_filesystem_avail_bytes{
+    instance="192.168.100.10:9100",
+    mountpoint="/",
+    fstype!=""
+  }
+  /
+  node_filesystem_size_bytes{
+    instance="192.168.100.10:9100",
+    mountpoint="/",
+    fstype!=""
+  }
+)
+```
+
+### Panel 4 – Network Receive
+
+- **Title:** `VM1 - Network Receive`
+- **Visualization:** Time series
+
+PromQL:
+
+```promql
+rate(node_network_receive_bytes_total{
+  instance="192.168.100.10:9100",
+  device="ens33"
+}[1m])
+```
+
+Unit: `bytes/sec (B/s)`.
+
+### Panel 5 – Network Transmit
+
+- **Title:** `VM1 - Network Transmit`
+- **Visualization:** Time series
+
+PromQL:
+
+```promql
+rate(node_network_transmit_bytes_total{
+  instance="192.168.100.10:9100",
+  device="ens33"
+}[1m])
+```
+
+Unit: `bytes/sec (B/s)`.
+
+**Lưu ý:** `ens33` chỉ là tên card mạng được dùng trong ví dụ. Nếu card mạng VM1 có tên khác, thay bằng tên thực tế lấy từ lệnh `ip -br addr` trên VM1.
+
+### Panel 6 – Process Count
+
+- **Title:** `VM1 - Process Count`
+- **Visualization:** Time series
+
+PromQL:
+
+```promql
+namedprocess_namegroup_num_procs{
+  instance="192.168.100.10:9256"
+}
+```
+
+Panel giúp theo dõi số lượng tiến trình theo từng nhóm mà process-exporter ghi nhận.
+
+### Panel 7 – Disk Read
+
+PromQL:
+
+```promql
+rate(node_disk_read_bytes_total{
+  instance="192.168.100.10:9100",
+  device="sda"
+}[1m])
+```
+
+- **Title:** `VM1 - Disk Read`
+- **Visualization:** Time series
+- **Unit:** `bytes/sec (B/s)`
+
+### Panel 8 – Disk Write
+
+PromQL:
+
+```promql
+rate(node_disk_written_bytes_total{
+  instance="192.168.100.10:9100",
+  device="sda"
+}[1m])
+```
+
+- **Title:** `VM1 - Disk Write`
+- **Visualization:** Time series
+- **Unit:** `bytes/sec (B/s)`
+
+**Lưu ý:** `sda` chỉ là tên ổ đĩa ví dụ. Kiểm tra tên ổ đĩa thực tế trên VM1 bằng:
+
+```bash
+lsblk
+```
+
+Nếu tên ổ đĩa khác, thay `sda` bằng tên tương ứng.
+
+### Panel 9 – RAM Available
+
+PromQL:
+
+```promql
+node_memory_MemAvailable_bytes{
+  instance="192.168.100.10:9100"
+} / 1024 / 1024
+```
+
+Cấu hình:
+
+| Thuộc tính | Giá trị |
+|---|---|
+| Title | `VM1 - RAM Available` |
+| Visualization | Stat |
+| Unit | Data → mebibytes (MiB) |
+| Decimals | `2` |
+| Calculation | Last |
+
+Kết quả là lượng RAM còn khả dụng của VM1 theo MiB.
+
+`MemAvailable` là lượng RAM hệ thống ước tính có thể cấp phát cho ứng dụng mà không cần swap; không đơn giản chỉ là RAM chưa sử dụng.
+
+### Panel 10 – Disk IOPS
+
+**10.1 – Disk Read IOPS**
+
+PromQL:
+
+```promql
+sum(
+  rate(node_disk_reads_completed_total{
+    instance="192.168.100.10:9100",
+    device!~"loop.*|ram.*"
+  }[1m])
+)
+```
+
+Cấu hình:
+
+| Thuộc tính | Giá trị |
+|---|---|
+| Title | `VM1 - Disk Read IOPS` |
+| Visualization | Time series |
+| Unit | Throughput → ops/sec |
+| Legend | Read IOPS |
+| Min | `0` |
+
+**10.2 – Disk Write IOPS**
+
+PromQL:
+
+```promql
+sum(
+  rate(node_disk_writes_completed_total{
+    instance="192.168.100.10:9100",
+    device!~"loop.*|ram.*"
+  }[1m])
+)
+```
+
+Cấu hình:
+
+| Thuộc tính | Giá trị |
+|---|---|
+| Title | `VM1 - Disk Write IOPS` |
+| Visualization | Time series |
+| Unit | Throughput → ops/sec |
+| Legend | Write IOPS |
+| Min | `0` |
+
+Các truy vấn trên thể hiện số thao tác đọc/ghi ổ đĩa mỗi giây (IOPS).
+
+### Panel 11 – Nginx CPU Usage (%)
+
+PromQL:
+
+```promql
+100 * sum(
+  rate(namedprocess_namegroup_cpu_seconds_total{
+    instance="192.168.100.10:9256",
+    groupname="nginx"
+  }[1m])
+)
+```
+
+Cấu hình:
+
+- **Title:** `VM1 - Nginx CPU Usage`
+- **Visualization:** Time series
+- **Unit:** Percent (0-100)
+- **Legend:** Nginx CPU
+
+CPU của Nginx có thể vượt 100% nếu tiến trình sử dụng nhiều hơn một CPU core. Đây là cách tính tổng CPU theo số core, không nhất thiết là lỗi.
+
+### Panel 12 – Nginx RAM (MiB)
+
+PromQL:
+
+```promql
+sum(
+  namedprocess_namegroup_memory_bytes{
+    instance="192.168.100.10:9256",
+    groupname="nginx",
+    memtype="resident"
+  }
+) / 1024 / 1024
+```
+
+Cấu hình:
+
+- **Title:** `VM1 - Nginx RAM`
+- **Visualization:** Stat
+- **Unit:** Data → mebibytes (MiB)
+- **Calculation:** Last
+
+Nếu Panel Nginx không có dữ liệu, kiểm tra process-exporter có nhận diện đúng nhóm tiến trình Nginx hay không. Tên nhãn và nhóm phải khớp với dữ liệu thực tế mà Exporter trả về.
+
+## 8. Lưu Dashboard
+
+Sau khi tạo và kiểm tra các Panel:
+
+1. Đặt tên Dashboard: **VM1 Server Monitoring**.
+2. Chọn khoảng thời gian: **Last 15 minutes**.
+3. Thiết lập Auto refresh: **10s**.
+4. Nhấn **Save dashboard**.
+
+Thông tin hiển thị trên Dashboard:
+
+```text
+VM1 – SERVER MONITORING
+192.168.100.10 · Prometheus · Auto refresh 10s
+```
+
+## 9. Kiểm tra hoàn tất
+
+Trước khi kết thúc, kiểm tra các nội dung sau:
+
+- [ ] VM2 chạy Ubuntu Server 24.04 LTS và có IP `192.168.100.20`.
+- [ ] Prometheus hoạt động với phiên bản `2.45.3`.
+- [ ] Grafana hoạt động với phiên bản `13.2.4`.
+- [ ] Grafana truy cập được tại `http://192.168.100.20:3000`.
+- [ ] Prometheus truy cập được tại `http://192.168.100.20:9090`.
+- [ ] Hai Exporter trên VM1 phản hồi HTTP `200` từ VM2.
+- [ ] Các target `vm1-node` và `vm1-process` có trạng thái `UP`.
+- [ ] Grafana kết nối thành công với Prometheus.
+- [ ] Các truy vấn PromQL trả về dữ liệu.
+- [ ] Dashboard `VM1 Server Monitoring` đã được lưu.
+
+**Lưu ý về phạm vi giám sát:** Node Exporter và process-exporter cung cấp số liệu hệ thống và tiến trình. Các chỉ số hiệu năng HTTP như thời gian phản hồi, thông lượng yêu cầu và tỷ lệ lỗi cần được lấy thêm từ công cụ benchmark (k6) chạy trên VM3; không thể chỉ dựa vào Dashboard này để kết luận hiệu năng dịch vụ Web.

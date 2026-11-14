@@ -43,3 +43,19 @@ __pycache__/
 .venv/
 .vscode/
 .idea/
+
+# Prometheus runtime data
+prometheus/data/
+prometheus/tsdb/
+wal/
+*.wal
+
+# Grafana runtime data
+grafana/data/
+grafana/logs/
+
+# Credentials and secrets
+.env
+.env.*
+*.secret
+secrets/
