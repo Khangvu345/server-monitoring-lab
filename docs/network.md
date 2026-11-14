@@ -6,9 +6,8 @@ Ba VM kết nối vào **cùng một VMnet NAT** trong VMware Virtual Network Ed
 
 NAT cho phép VM sử dụng kết nối mạng thông qua Host/gateway NAT. Bridge là chế độ đưa VM tham gia mạng LAN vật lý như một thiết bị trong mạng đó. Dự án chọn NAT để tạo mạng lab riêng và vẫn có thể truy cập mạng ngoài qua NAT.
 
-## 2. Kế hoạch địa chỉ IP dự kiến
-
-Các địa chỉ dưới đây là đề xuất ban đầu, chưa phải cấu hình đã xác minh. Kiểm tra subnet và gateway trong Virtual Network Editor, tránh trùng với mạng đang dùng.
+## 2. Địa chỉ IP 
+Kiểm tra subnet và gateway trong Virtual Network Editor, tránh trùng với mạng đang dùng và thiết lập như sau.
 
 | VM | Hostname | IP dự kiến |
 |---|---|---|
@@ -18,11 +17,11 @@ Các địa chỉ dưới đây là đề xuất ban đầu, chưa phải cấu 
 
 | Thuộc tính | Giá trị |
 |---|---|
-| VMnet | TODO |
-| Subnet | TODO (đề xuất 192.168.100.0/24) |
-| Gateway NAT | TODO (không mặc định; đọc từ VMware) |
-| DNS | TODO |
-| DHCP | TODO (cần thống nhất cách dùng DHCP/static) |
+| VMnet | Vmnet8 - NAT |
+| Subnet | 192.168.100.0/24 |
+| Gateway NAT | 192.168.100.2 |
+| DNS | Auto |
+| DHCP | Không dùng, địa chỉ IP tĩnh |
 
 ## 3. Luồng kết nối và cổng
 
@@ -56,6 +55,4 @@ ping -c 4 192.168.100.30
 
 Thay địa chỉ theo IP thực tế đã chốt. Ping có thể bị chặn bởi firewall; nếu ping thất bại, kiểm tra route, IP, VMnet và firewall trước khi kết luận VM không kết nối được.
 
-## 5. Thông tin cần cập nhật
 
-Sau khi cấu hình VMware, cập nhật VMnet, subnet, gateway, DHCP range và IP thực tế vào bảng ở trên.

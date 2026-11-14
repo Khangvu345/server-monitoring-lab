@@ -44,7 +44,7 @@ Tổng cấp phát: 5 vCPU, 5 GB RAM, 30 GB dung lượng đĩa ảo.
 | process-exporter | TODO | TODO | TODO |
 | Prometheus | 2.45.3 | VMWare lệnh "sudo apt install -y prometheus" | Long |
 | Grafana | 13.2.4 | VMWare lệnh "sudo apt install -y grafana" | Long |
-| k6 | TODO | TODO | TODO |
+| k6 | 2.3.0 | https://sourceforge.net/projects/k6-grafana.mirror/files/v2.3.0/  | Khang |
 
 ## 5. Nguyên tắc tái lập
 
