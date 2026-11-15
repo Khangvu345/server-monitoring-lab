@@ -3,7 +3,7 @@
   "kind": "Dashboard",
   "metadata": {
     "name": "admtvhf",
-    "generation": 21,
+    "generation": 23,
     "creationTimestamp": "2026-11-05T07:41:15Z",
     "labels": {},
     "annotations": {}
@@ -877,7 +877,7 @@
               },
               "fieldConfig": {
                 "defaults": {
-                  "unit": "bytes/sec (B/s)",
+                  "unit": "binBps",
                   "thresholds": {
                     "mode": "absolute",
                     "steps": [
@@ -993,7 +993,7 @@
               },
               "fieldConfig": {
                 "defaults": {
-                  "unit": "bytes/sec (B/s)",
+                  "unit": "binBps",
                   "thresholds": {
                     "mode": "absolute",
                     "steps": [
