@@ -1,0 +1,9 @@
+run_id,vus,start_utc,duration_s,request_count,rps,error_count,error_pct,avg_ms,p50_ms,p95_ms,after_window_count,source
+smoke_vu1_lan01,1,2026-11-15T14:57:09.672Z,15,146,9.7333,0,0,1.8116,1.6118,3.3571,0,terminal summary supplied by Khang; raw samples not yet included
+pilot_vu1_lan01,1,2026-11-15T15:06:59.844Z,120,1172,9.7667,0,0,1.3997,1.1874,2.6312,0,terminal summary supplied by Khang; raw samples not yet included
+pilot_vu5_lan01,5,2026-11-15T15:11:36.241Z,120,5830,48.5833,0,0,2.0592,1.8703,3.8438,0,terminal summary supplied by Khang; raw samples not yet included
+pilot_vu15_lan01,15,2026-11-15T15:16:51.797Z,120,17385,144.875,0,0,2.7833,2.63,5.0667,0,terminal summary supplied by Khang; raw samples not yet included
+probe_vu30_lan01,30,2026-11-15T15:35:08.221Z,120,34903,290.8583,0,0,2.4605,1.8863,5.3521,0,terminal summary supplied by Khang; raw samples not yet included
+probe_vu100_lan01,100,2026-11-15T16:29:23.414Z,120,115804,965.0333,0,0,2.7529,1.6333,6.7319,6,terminal summary supplied by Khang; raw samples not yet included
+probe_vu500_lan01,500,2026-11-15T16:51:56.787Z,120,363775,3031.4583,0,0,53.397,41.2649,140.2096,332,terminal summary supplied by Khang; raw samples not yet included
+probe_vu1000_lan01,1000,2026-11-15T16:58:54.923Z,120,236302,1969.1833,3484,1.4744,,,,855,terminal summary supplied by Khang; raw samples not yet included
