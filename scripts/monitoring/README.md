@@ -465,7 +465,7 @@ rate(node_network_receive_bytes_total{
 }[1m])
 ```
 
-Unit: `bytes/sec (B/s)`.
+Unit: `Data rate → bytes/sec (IEC)`.
 
 ### Panel 5 – Network Transmit
 
@@ -481,7 +481,7 @@ rate(node_network_transmit_bytes_total{
 }[1m])
 ```
 
-Unit: `bytes/sec (B/s)`.
+Unit: `Data rate → bytes/sec (IEC)`.
 
 **Lưu ý:** `ens33` chỉ là tên card mạng được dùng trong ví dụ. Nếu card mạng VM1 có tên khác, thay bằng tên thực tế lấy từ lệnh `ip -br addr` trên VM1.
 
