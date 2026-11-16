@@ -3,7 +3,9 @@
 # Mục tiêu chính: cùng múi giờ và đồng bộ NTP, để access log của Nginx, kết quả k6 và đồ thị
 # Prometheus/Grafana đối chiếu được theo cùng một khoảng thời gian.
 #
-# Cách dùng:  sudo VM_HOSTNAME=server ./setup-common.sh
+# Cách dùng (cấp quyền thực thi một lần trước khi chạy):
+#             chmod +x setup-common.sh
+#             sudo VM_HOSTNAME=server ./setup-common.sh
 #             sudo VM_HOSTNAME=monitoring ./setup-common.sh
 #             sudo VM_HOSTNAME=test ./setup-common.sh
 #

@@ -1,7 +1,9 @@
 #!/usr/bin/env bash
 # Cài Nginx 1.24.0, Node Exporter 1.12.1 và process-exporter 0.8.7 trên VM Server (Ubuntu Server 24.04),
 # đồng thời tạo tệp benchmark 65.536 byte và cấu hình Nginx phục vụ tệp đó.
-# Cách dùng: sudo ./setup-server.sh
+# Cách dùng (cấp quyền thực thi một lần trước khi chạy):
+#   chmod +x setup-server.sh
+#   sudo ./setup-server.sh
 # Các biến tùy chọn: MONITORING_IP (mặc định 192.168.100.20), TEST_IP (mặc định 192.168.100.30)
 # Hướng dẫn thủ công tương ứng: docs/server-manual-setup.md
 set -euo pipefail
@@ -188,12 +190,12 @@ verify() {
         systemctl is-active --quiet "$svc" || die "$svc không chạy. Xem: journalctl -u $svc -n 50"
     done
 
-    curl -fsS -o /dev/null http://127.0.0.1/ || die "Nginx không trả lời HTTP."
-
+    # Site benchmark chỉ phục vụ /benchmark/payload.bin; "/" không có index nên trả 403.
+    # Vì vậy kiểm tra Nginx bằng chính đường dẫn payload.
     local code
     code="$(curl -sS -o "$WORK_DIR/check.bin" -w '%{http_code}' \
         -H 'Accept-Encoding: identity' http://127.0.0.1/benchmark/payload.bin)" \
-        || die "Không tải được /benchmark/payload.bin."
+        || die "Nginx không trả lời HTTP khi tải /benchmark/payload.bin."
     [[ "$code" == "200" ]] || die "/benchmark/payload.bin trả về HTTP $code, cần 200."
     [[ "$(stat -c %s "$WORK_DIR/check.bin")" == "$PAYLOAD_SIZE" ]] \
         || die "Phản hồi không đủ ${PAYLOAD_SIZE} byte."

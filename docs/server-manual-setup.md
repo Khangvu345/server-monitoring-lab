@@ -336,7 +336,7 @@ Nếu cần truy cập Nginx từ máy Host để kiểm tra, thêm: `sudo ufw a
 
 ```bash
 systemctl is-active nginx node_exporter process-exporter
-curl -I http://127.0.0.1/
+curl -s -o /dev/null -w "%{http_code}\n" http://127.0.0.1/benchmark/payload.bin
 curl -s http://127.0.0.1:9100/metrics | grep -c '^node_'
 curl -s http://127.0.0.1:9256/metrics | grep -c '^namedprocess_'
 ```
@@ -344,7 +344,7 @@ curl -s http://127.0.0.1:9256/metrics | grep -c '^namedprocess_'
 Kết quả mong đợi:
 
 - Ba dịch vụ đều in ra `active`.
-- `curl -I` trả về `HTTP/1.1 200 OK`.
+- Lệnh `curl` tải payload in ra `200`. Không kiểm tra `/` vì site benchmark không có trang chủ, Nginx trả `403` là bình thường.
 - Hai lệnh `grep -c` đều trả về số lớn hơn 0.
 
 Từ VM Monitoring (`192.168.100.20`), kiểm tra hai cổng metrics:
@@ -358,7 +358,8 @@ curl -s -o /dev/null -w "%{http_code}\n" http://192.168.100.10:9256/metrics
 Từ VM Test (`192.168.100.30`), kiểm tra HTTP:
 
 ```bash
-curl -I http://192.168.100.10/
+curl -s -o /dev/null -w "%{http_code}\n" http://192.168.100.10/benchmark/payload.bin
+# Mong đợi: 200
 ```
 
 ## 8. Ghi nhận khi bàn giao

@@ -66,7 +66,7 @@ Khi thành công, script in ra `Hoàn tất.` cùng phiên bản các thành ph�
 
 ```bash
 systemctl is-active nginx node_exporter process-exporter
-curl -I http://127.0.0.1/
+curl -s -o /dev/null -w "%{http_code}\n" http://127.0.0.1/benchmark/payload.bin
 curl -s http://127.0.0.1:9100/metrics | grep -m 3 '^node_cpu_seconds_total'
 curl -s http://127.0.0.1:9256/metrics | grep -m 3 '^namedprocess_namegroup_'
 ```
