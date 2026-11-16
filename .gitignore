@@ -15,7 +15,9 @@ credentials/
 *.swp
 .DS_Store
 Thumbs.db
-
+# Enable store for benchmark results, but ignore all files in the results directory except for .gitkeep
+!benchmark/results/
+!benchmark/results/**
 # Virtual machines and snapshots
 *.vmdk
 *.vdi
@@ -34,9 +36,6 @@ Thumbs.db
 *.vmwarevm/
 **/Snapshots/
 
-# Generated benchmark output (review before committing)
-benchmark/results/*
-!benchmark/results/.gitkeep
 
 # Python / editor artifacts
 __pycache__/

@@ -119,6 +119,58 @@ curl -I http://127.0.0.1/
 # HTTP/1.1 200 OK
 ```
 
+## 3.1 Tạo tệp benchmark và cấu hình site Nginx
+
+Tệp `payload.bin` là dãy byte 0..255 lặp 256 lần, đúng 65.536 byte (64 KiB). Mã băm SHA-256 chuẩn là `7daca2095d0438260fa849183dfc67faa459fdf4936e1bc91eec6b281b27e4c2`. Nếu mã băm khác, dừng lại và kiểm tra lại.
+
+```bash
+sudo install -d -m 0755 /var/www/benchmark
+sudo python3 -c "import sys; open(sys.argv[1], 'wb').write(bytes(range(256)) * 256)" /var/www/benchmark/payload.bin
+sudo chmod 0644 /var/www/benchmark/payload.bin
+
+stat -c %s /var/www/benchmark/payload.bin
+# 65536
+sha256sum /var/www/benchmark/payload.bin
+# 7daca2095d0438260fa849183dfc67faa459fdf4936e1bc91eec6b281b27e4c2
+```
+
+Cài site benchmark. File cấu hình nằm trong repo tại `configs/nginx/benchmark.conf`, chép vào Server. Nếu dùng script [`setup-server.sh`](../scripts/server/README.md), script làm các bước này tự động:
+
+```bash
+sudo install -m 0644 benchmark.conf /etc/nginx/sites-available/benchmark
+sudo rm -f /etc/nginx/sites-enabled/default
+sudo ln -sfn /etc/nginx/sites-available/benchmark /etc/nginx/sites-enabled/benchmark
+sudo nginx -t
+sudo systemctl reload nginx
+```
+
+Kiểm tra đúng điều kiện kịch bản: HTTP 200, đủ 65.536 byte, không redirect, không nén:
+
+```bash
+curl -sS -o /tmp/check.bin -w "HTTP %{http_code} | bytes %{size_download} | redirect %{num_redirects}\n" \
+  -H "Accept-Encoding: identity" http://127.0.0.1/benchmark/payload.bin
+sha256sum /tmp/check.bin
+```
+
+Kết quả mong đợi: `HTTP 200 | bytes 65536 | redirect 0` và mã băm giống giá trị chuẩn ở trên.
+
+Ghi manifest tại `/etc/benchmark/manifest.txt` (ghi cả SHA-256 và cấu hình VM) để bàn giao. Script tự tạo file này; nếu cài tay, ghi các thông tin sau:
+
+```bash
+sudo install -d -m 0755 /etc/benchmark
+sudo tee /etc/benchmark/manifest.txt >/dev/null <<EOF
+Đường dẫn: /benchmark/payload.bin
+Kích thước (byte): 65536
+Nội dung: byte 0..255 lặp 256 lần
+SHA-256: 7daca2095d0438260fa849183dfc67faa459fdf4936e1bc91eec6b281b27e4c2
+Tạo lúc: $(date -Is)
+OS: $(lsb_release -ds)
+vCPU: $(nproc)
+RAM: $(free -m | awk '/Mem:/{print $2" MiB"}')
+Nginx: $(nginx -v 2>&1)
+EOF
+```
+
 ## 4. Cài Node Exporter 1.12.1
 
 Đặt biến phiên bản để dùng lại trong các lệnh sau:
@@ -284,7 +336,7 @@ Nếu cần truy cập Nginx từ máy Host để kiểm tra, thêm: `sudo ufw a
 
 ```bash
 systemctl is-active nginx node_exporter process-exporter
-curl -I http://127.0.0.1/
+curl -s -o /dev/null -w "%{http_code}\n" http://127.0.0.1/benchmark/payload.bin
 curl -s http://127.0.0.1:9100/metrics | grep -c '^node_'
 curl -s http://127.0.0.1:9256/metrics | grep -c '^namedprocess_'
 ```
@@ -292,7 +344,7 @@ curl -s http://127.0.0.1:9256/metrics | grep -c '^namedprocess_'
 Kết quả mong đợi:
 
 - Ba dịch vụ đều in ra `active`.
-- `curl -I` trả về `HTTP/1.1 200 OK`.
+- Lệnh `curl` tải payload in ra `200`. Không kiểm tra `/` vì site benchmark không có trang chủ, Nginx trả `403` là bình thường.
 - Hai lệnh `grep -c` đều trả về số lớn hơn 0.
 
 Từ VM Monitoring (`192.168.100.20`), kiểm tra hai cổng metrics:
@@ -306,7 +358,8 @@ curl -s -o /dev/null -w "%{http_code}\n" http://192.168.100.10:9256/metrics
 Từ VM Test (`192.168.100.30`), kiểm tra HTTP:
 
 ```bash
-curl -I http://192.168.100.10/
+curl -s -o /dev/null -w "%{http_code}\n" http://192.168.100.10/benchmark/payload.bin
+# Mong đợi: 200
 ```
 
 ## 8. Ghi nhận khi bàn giao
