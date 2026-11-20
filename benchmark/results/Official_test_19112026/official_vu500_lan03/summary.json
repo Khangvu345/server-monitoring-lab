@@ -1,0 +1,20 @@
+{
+  "run_id": "official_vu500_lan03",
+  "vus": 500,
+  "start_utc": "2026-11-19T15:34:05.482Z",
+  "end_utc": "2026-11-19T15:36:05.482Z",
+  "duration_s": 120,
+  "request_count": 231511,
+  "rps": 1929.2583,
+  "error_count": 0,
+  "error_pct": 0.0,
+  "avg_ms": 136.4853,
+  "p50_ms": 109.6522,
+  "p95_ms": 322.535,
+  "status_zero_count": 0,
+  "after_window_count": 301,
+  "note": "",
+  "http_status_counts": {
+    "200": 231511
+  }
+}
