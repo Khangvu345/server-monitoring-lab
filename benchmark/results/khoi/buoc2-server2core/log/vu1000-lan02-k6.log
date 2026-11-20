@@ -1,0 +1,27 @@
+time="2026-11-19T13:46:10Z" level=warning msg="Request Failed" error="request timeout"
+
+
+  █ TOTAL RESULTS 
+
+    CUSTOM
+    lab_request_ms.................: avg=548.46ms med=495.15ms p(95)=1s   min=1.41ms   max=10s  
+    lab_scenario_start_ms..........: 1795095958017 min=1795095958017 max=1795095958017
+
+    HTTP
+    http_req_duration..............: avg=548.46ms med=495.15ms p(95)=1s   min=1.41ms   max=10s  
+      { expected_response:true }...: avg=548.41ms med=495.15ms p(95)=1s   min=1.41ms   max=8.73s
+    http_req_failed................: 0.00%         1 out of 184461
+    http_reqs......................: 184461        1528.987805/s
+
+    EXECUTION
+    iteration_duration.............: avg=651.55ms med=597.7ms  p(95)=1.1s min=101.51ms max=10.1s
+    iterations.....................: 184461        1528.987805/s
+    vus............................: 1000          min=1000          max=1000         
+    vus_max........................: 1000          min=1000          max=1000         
+
+    NETWORK
+    data_received..................: 12 GB         101 MB/s
+    data_sent......................: 22 MB         180 kB/s
+
+
+

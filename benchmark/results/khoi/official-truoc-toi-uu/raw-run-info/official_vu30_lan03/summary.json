@@ -1,0 +1,20 @@
+{
+  "run_id": "official_vu30_lan03",
+  "vus": 30,
+  "start_utc": "2026-11-19T16:57:19.611Z",
+  "end_utc": "2026-11-19T16:59:19.611Z",
+  "duration_s": 120,
+  "request_count": 35254,
+  "rps": 293.7833,
+  "error_count": 0,
+  "error_pct": 0.0,
+  "avg_ms": 1.6174,
+  "p50_ms": 1.3656,
+  "p95_ms": 3.3543,
+  "status_zero_count": 0,
+  "after_window_count": 0,
+  "note": "",
+  "http_status_counts": {
+    "200": 35254
+  }
+}
