@@ -1,0 +1,20 @@
+{
+  "run_id": "probe_vu500_lan01",
+  "vus": 500,
+  "start_utc": "2026-11-20T02:17:22.000Z",
+  "end_utc": "2026-11-20T02:19:22.000Z",
+  "duration_s": 120,
+  "request_count": 565360,
+  "rps": 4711.3333,
+  "error_count": 0,
+  "error_pct": 0.0,
+  "avg_ms": 4.6599,
+  "p50_ms": 1.8939,
+  "p95_ms": 16.2252,
+  "status_zero_count": 0,
+  "after_window_count": 25,
+  "note": "",
+  "http_status_counts": {
+    "200": 565360
+  }
+}

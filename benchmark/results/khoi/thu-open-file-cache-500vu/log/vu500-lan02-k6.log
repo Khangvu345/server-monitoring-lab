@@ -1,0 +1,26 @@
+
+
+  █ TOTAL RESULTS 
+
+    CUSTOM
+    lab_request_ms.................: avg=4.65ms   med=1.89ms   p(95)=16.22ms  min=206.8µs  max=617.9ms 
+    lab_scenario_start_ms..........: 1795141042000 min=1795141042000 max=1795141042000
+
+    HTTP
+    http_req_duration..............: avg=4.65ms   med=1.89ms   p(95)=16.22ms  min=206.8µs  max=617.9ms 
+      { expected_response:true }...: avg=4.65ms   med=1.89ms   p(95)=16.22ms  min=206.8µs  max=617.9ms 
+    http_req_failed................: 0.00%         0 out of 565385
+    http_reqs......................: 565385        4707.512974/s
+
+    EXECUTION
+    iteration_duration.............: avg=106.06ms med=102.68ms p(95)=121.54ms min=100.29ms max=719.44ms
+    iterations.....................: 565385        4707.512974/s
+    vus............................: 500           min=500           max=500          
+    vus_max........................: 500           min=500           max=500          
+
+    NETWORK
+    data_received..................: 37 GB         310 MB/s
+    data_sent......................: 67 MB         556 kB/s
+
+
+

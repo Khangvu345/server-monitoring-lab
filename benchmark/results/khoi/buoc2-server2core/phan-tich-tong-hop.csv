@@ -1,0 +1,4 @@
+run_id,vus,start_utc,end_utc,duration_s,request_count,rps,error_count,error_pct,avg_ms,p50_ms,p95_ms,status_zero_count,after_window_count,note
+probe_vu1000_lan01,1000,2026-11-19T13:41:15.862Z,2026-11-19T13:43:15.862Z,120,174163,1451.3583,0,0.0,583.9902,518.3442,1083.7309,0,959,
+probe_vu1000_lan02,1000,2026-11-19T13:45:58.017Z,2026-11-19T13:47:58.017Z,120,183479,1528.9917,1,0.0005,,,,1,982,Khong du latency tin cay do status=0
+probe_vu500_lan01,500,2026-11-19T14:13:57.066Z,2026-11-19T14:15:57.066Z,120,519875,4332.2917,0,0.0,13.2277,3.0591,60.9032,0,7,

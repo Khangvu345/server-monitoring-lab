@@ -1,0 +1,20 @@
+{
+  "run_id": "probe_vu1000_lan01",
+  "vus": 1000,
+  "start_utc": "2026-11-19T13:41:15.862Z",
+  "end_utc": "2026-11-19T13:43:15.862Z",
+  "duration_s": 120,
+  "request_count": 174163,
+  "rps": 1451.3583,
+  "error_count": 0,
+  "error_pct": 0.0,
+  "avg_ms": 583.9902,
+  "p50_ms": 518.3442,
+  "p95_ms": 1083.7309,
+  "status_zero_count": 0,
+  "after_window_count": 959,
+  "note": "",
+  "http_status_counts": {
+    "200": 174163
+  }
+}

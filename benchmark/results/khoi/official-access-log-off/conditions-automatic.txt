@@ -1,0 +1,32 @@
+Thời điểm thu thập UTC: 2026-11-20T00:12:33.094Z
+Chế độ: official
+Đích: http://192.168.100.10/benchmark/payload.bin
+Mức VU: 30 100 500
+Lặp/mức: 3
+Làm nóng/đo/nghỉ (giây): 30/120/60
+SHA-256 kỳ vọng: 7daca2095d0438260fa849183dfc67faa459fdf4936e1bc91eec6b281b27e4c2
+
+--- Phiên bản k6 ---
+k6 v2.3.0 (commit/e088784614, go1.26.8, linux/amd64)
+
+--- VM Test ---
+Linux kiemThu 6.8.0-149-generic #149-Ubuntu SMP PREEMPT_DYNAMIC Fri Oct 23 13:21:10 UTC 2026 x86_64 x86_64 x86_64 GNU/Linux
+kiemThu
+ 00:12:33 up 8 min,  2 users,  load average: 0.01, 0.05, 0.04
+               total        used        free      shared  buff/cache   available
+Mem:           1.3Gi       392Mi       882Mi       1.2Mi       254Mi       987Mi
+Swap:          1.8Gi          0B       1.8Gi
+lo               UNKNOWN        127.0.0.1/8 ::1/128 
+ens33            UP             192.168.100.30/24 fe80::20c:29ff:fede:f4a7/64 
+               Local time: Fri 2026-11-20 00:12:33 UTC
+           Universal time: Fri 2026-11-20 00:12:33 UTC
+                 RTC time: Fri 2026-11-20 00:12:33
+                Time zone: Etc/UTC (UTC, +0000)
+System clock synchronized: yes
+              NTP service: active
+          RTC in local TZ: no
+
+--- Dấu vân tay các script ---
+4c37629fdf0e391f19971717cacb0b8734ea66747d12b04bedccc848b1a8c5d8  /home/khoi/server-monitoring-lab/benchmark/k6/http-test.js
+32e9f9524b9b6338840ea264669f20718f2068c7512ddb0c69b65ecc7da4306e  /home/khoi/server-monitoring-lab/scripts/test/run-benchmark.sh
+3354487c24af6d7da8f0d6b56cd6f02a93d70450b086d6f12004870c87e8736a  /home/khoi/server-monitoring-lab/benchmark/analysis/analyze-results.py

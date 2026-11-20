@@ -1,0 +1,20 @@
+{
+  "run_id": "official_vu100_lan02",
+  "vus": 100,
+  "start_utc": "2026-11-19T17:04:37.394Z",
+  "end_utc": "2026-11-19T17:06:37.394Z",
+  "duration_s": 120,
+  "request_count": 117502,
+  "rps": 979.1833,
+  "error_count": 0,
+  "error_pct": 0.0,
+  "avg_ms": 1.5341,
+  "p50_ms": 1.3186,
+  "p95_ms": 2.8267,
+  "status_zero_count": 0,
+  "after_window_count": 6,
+  "note": "",
+  "http_status_counts": {
+    "200": 117502
+  }
+}
