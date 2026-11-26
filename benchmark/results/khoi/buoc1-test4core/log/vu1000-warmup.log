@@ -1,0 +1,58 @@
+time="2026-11-19T13:22:03Z" level=warning msg="Request Failed" error="Get \"http://192.168.100.10/benchmark/payload.bin\": EOF"
+time="2026-11-19T13:22:03Z" level=warning msg="Request Failed" error="Get \"http://192.168.100.10/benchmark/payload.bin\": EOF"
+time="2026-11-19T13:22:03Z" level=warning msg="Request Failed" error="Get \"http://192.168.100.10/benchmark/payload.bin\": EOF"
+time="2026-11-19T13:22:03Z" level=warning msg="Request Failed" error="Get \"http://192.168.100.10/benchmark/payload.bin\": EOF"
+time="2026-11-19T13:22:03Z" level=warning msg="Request Failed" error="Get \"http://192.168.100.10/benchmark/payload.bin\": EOF"
+time="2026-11-19T13:22:03Z" level=warning msg="Request Failed" error="Get \"http://192.168.100.10/benchmark/payload.bin\": EOF"
+time="2026-11-19T13:22:03Z" level=warning msg="Request Failed" error="Get \"http://192.168.100.10/benchmark/payload.bin\": EOF"
+time="2026-11-19T13:22:03Z" level=warning msg="Request Failed" error="Get \"http://192.168.100.10/benchmark/payload.bin\": EOF"
+time="2026-11-19T13:22:03Z" level=warning msg="Request Failed" error="Get \"http://192.168.100.10/benchmark/payload.bin\": EOF"
+time="2026-11-19T13:22:03Z" level=warning msg="Request Failed" error="Get \"http://192.168.100.10/benchmark/payload.bin\": EOF"
+time="2026-11-19T13:22:03Z" level=warning msg="Request Failed" error="Get \"http://192.168.100.10/benchmark/payload.bin\": EOF"
+time="2026-11-19T13:22:03Z" level=warning msg="Request Failed" error="Get \"http://192.168.100.10/benchmark/payload.bin\": EOF"
+time="2026-11-19T13:22:03Z" level=warning msg="Request Failed" error="Get \"http://192.168.100.10/benchmark/payload.bin\": http: server closed idle connection"
+time="2026-11-19T13:22:03Z" level=warning msg="Request Failed" error="Get \"http://192.168.100.10/benchmark/payload.bin\": EOF"
+time="2026-11-19T13:22:03Z" level=warning msg="Request Failed" error="Get \"http://192.168.100.10/benchmark/payload.bin\": EOF"
+time="2026-11-19T13:22:03Z" level=warning msg="Request Failed" error="Get \"http://192.168.100.10/benchmark/payload.bin\": EOF"
+time="2026-11-19T13:22:03Z" level=warning msg="Request Failed" error="Get \"http://192.168.100.10/benchmark/payload.bin\": EOF"
+time="2026-11-19T13:22:03Z" level=warning msg="Request Failed" error="Get \"http://192.168.100.10/benchmark/payload.bin\": EOF"
+time="2026-11-19T13:22:03Z" level=warning msg="Request Failed" error="Get \"http://192.168.100.10/benchmark/payload.bin\": EOF"
+time="2026-11-19T13:22:03Z" level=warning msg="Request Failed" error="Get \"http://192.168.100.10/benchmark/payload.bin\": EOF"
+time="2026-11-19T13:22:03Z" level=warning msg="Request Failed" error="Get \"http://192.168.100.10/benchmark/payload.bin\": EOF"
+time="2026-11-19T13:22:03Z" level=warning msg="Request Failed" error="Get \"http://192.168.100.10/benchmark/payload.bin\": EOF"
+time="2026-11-19T13:22:03Z" level=warning msg="Request Failed" error="Get \"http://192.168.100.10/benchmark/payload.bin\": EOF"
+time="2026-11-19T13:22:03Z" level=warning msg="Request Failed" error="Get \"http://192.168.100.10/benchmark/payload.bin\": EOF"
+time="2026-11-19T13:22:03Z" level=warning msg="Request Failed" error="Get \"http://192.168.100.10/benchmark/payload.bin\": EOF"
+time="2026-11-19T13:22:03Z" level=warning msg="Request Failed" error="Get \"http://192.168.100.10/benchmark/payload.bin\": EOF"
+time="2026-11-19T13:22:03Z" level=warning msg="Request Failed" error="Get \"http://192.168.100.10/benchmark/payload.bin\": EOF"
+time="2026-11-19T13:22:03Z" level=warning msg="Request Failed" error="Get \"http://192.168.100.10/benchmark/payload.bin\": EOF"
+time="2026-11-19T13:22:03Z" level=warning msg="Request Failed" error="Get \"http://192.168.100.10/benchmark/payload.bin\": EOF"
+time="2026-11-19T13:22:03Z" level=warning msg="Request Failed" error="Get \"http://192.168.100.10/benchmark/payload.bin\": EOF"
+time="2026-11-19T13:22:03Z" level=warning msg="Request Failed" error="Get \"http://192.168.100.10/benchmark/payload.bin\": EOF"
+time="2026-11-19T13:22:03Z" level=warning msg="Request Failed" error="Get \"http://192.168.100.10/benchmark/payload.bin\": EOF"
+
+
+  █ TOTAL RESULTS 
+
+    CUSTOM
+    lab_request_ms.................: avg=75.67ms med=18.36ms  p(95)=74.05ms  min=0s       max=3.63s
+    lab_scenario_start_ms..........: 1795094523470 min=1795094523470 max=1795094523470
+
+    HTTP
+    http_req_duration..............: avg=75.67ms med=18.36ms  p(95)=74.05ms  min=0s       max=3.63s
+      { expected_response:true }...: avg=75.69ms med=18.36ms  p(95)=74.05ms  min=496.16µs max=3.63s
+    http_req_failed................: 0.01%         32 out of 165944
+    http_reqs......................: 165944        5491.354473/s
+
+    EXECUTION
+    iteration_duration.............: avg=180.6ms med=120.66ms p(95)=197.29ms min=100.59ms max=3.79s
+    iterations.....................: 165944        5491.354473/s
+    vus............................: 1000          min=1000          max=1000         
+    vus_max........................: 1000          min=1000          max=1000         
+
+    NETWORK
+    data_received..................: 11 GB         361 MB/s
+    data_sent......................: 20 MB         657 kB/s
+
+
+

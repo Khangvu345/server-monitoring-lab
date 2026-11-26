@@ -1,0 +1,6 @@
+Thời gian UTC: 2026-11-19T17:11:47.019Z
+URL: http://192.168.100.10/benchmark/payload.bin
+HTTP: 200
+Số byte: 65536
+SHA-256: 7daca2095d0438260fa849183dfc67faa459fdf4936e1bc91eec6b281b27e4c2
+SHA-256 kỳ vọng: 7daca2095d0438260fa849183dfc67faa459fdf4936e1bc91eec6b281b27e4c2

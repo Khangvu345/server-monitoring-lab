@@ -1,0 +1,21 @@
+{
+  "run_id": "probe_vu1000_lan01",
+  "vus": 1000,
+  "start_utc": "2026-11-19T13:22:34.239Z",
+  "end_utc": "2026-11-19T13:24:34.239Z",
+  "duration_s": 120,
+  "request_count": 600866,
+  "rps": 5007.2167,
+  "error_count": 90,
+  "error_pct": 0.015,
+  "avg_ms": "",
+  "p50_ms": "",
+  "p95_ms": "",
+  "status_zero_count": 90,
+  "after_window_count": 750,
+  "note": "Khong du latency tin cay do status=0",
+  "http_status_counts": {
+    "200": 600776,
+    "0": 90
+  }
+}
